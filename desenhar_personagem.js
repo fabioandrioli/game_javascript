@@ -8,12 +8,20 @@ var WIDTH = 1000;//largura da �rea retangular
 var HEIGHT = 340;//altura da �rea retangular
 var eixoXdoDesenhoDaSubImage = 0;
 var tile1 = new Image();//Imagem que ser� carregada e desenhada na canvas
+var tile2 = new Image();
 var posicao = 1;
 var posicaoY = 100
 var posicaoDireita = 1;
 var posicaoEsquerda = 5;//Indicador da posi��o atual do personagem
 var NUM_POSICOES = 5;//Quantidade de imagens que comp�em o movimento
+var matriz = [[]]
 
+
+
+function gravidade(){
+    if(y < 180)
+        y = y + 40;
+}
 
 function KeyDown(evt){
     switch (evt.keyCode) {
@@ -73,6 +81,11 @@ function KeyDown(evt){
 function Desenhar() {    
     tile1.src = "sprites.png";
     ctx.drawImage(tile1,  posicao*100, posicaoY, 100, 100, x,y, 100, 100);
+
+    tile2.src = "floor.png"
+    for(i = 0; i < WIDTH; i++){
+            ctx.drawImage(tile2,  0, 0, 50, 50, i*50,290, 50, 50);
+    }
 }
 
 function LimparTela() {
@@ -84,6 +97,7 @@ function LimparTela() {
 }
 
 function Atualizar() {
+    gravidade();
     LimparTela();    
     Desenhar();
 }
