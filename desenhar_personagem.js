@@ -1,32 +1,70 @@
 var canvas;//o elemento canvas sobre o qual desenharemos
 var ctx;//o "contexto" da canvas que ser� utilizado (2D ou 3D)
 var dx = 10;//a taxa de varia��o (velocidade) horizontal do objeto
+var dy = 10;
 var x = 0;//posi��o horizontal do objeto (com valor inicial)
 var y = 0;//posi��o vertical do objeto (com valor inicial)
 var WIDTH = 1000;//largura da �rea retangular
 var HEIGHT = 340;//altura da �rea retangular
 var eixoXdoDesenhoDaSubImage = 0;
 var tile1 = new Image();//Imagem que ser� carregada e desenhada na canvas
-var posicao = 1;//Indicador da posi��o atual do personagem
-var NUM_POSICOES = 6;//Quantidade de imagens que comp�em o movimento
+var posicao = 1;
+var posicaoY = 100
+var posicaoDireita = 1;
+var posicaoEsquerda = 5;//Indicador da posi��o atual do personagem
+var NUM_POSICOES = 5;//Quantidade de imagens que comp�em o movimento
+
 
 function KeyDown(evt){
-    Atualizar()
     switch (evt.keyCode) {
         case 39:  /*seta para direita*/
-            if (x + dx < WIDTH){
+            posicaoY = 100;
+            if (x + dx < WIDTH - 100){
                 x += dx;
+                posicaoDireita++;
+                if(posicaoDireita == NUM_POSICOES){
+                    posicaoDireita = 1;
+                  
+                }
+                posicao = posicaoDireita
+            }
+            break; 
+        
+        case 37:  /*seta para direita*/
+            posicaoY = 300;
+            if (x - dx > (WIDTH - WIDTH)){
+                x -= dx;
+                posicaoEsquerda--;
+                if(posicaoEsquerda == 1){
+                    posicaoEsquerda = 5;
+                
+                }
+                posicao = posicaoEsquerda
+            }
+        break; 
+
+        case 40:  /*seta para direita*/
+            posicaoY = 0;
+            if (y + dy < HEIGHT - 100){
+                y += dy;
                 posicao++;
-                eixoXdoDesenhoDaSubImage = posicao - 1;
                 if(posicao == NUM_POSICOES){
                     posicao = 1;
                   
                 }
             }
             break; 
-        
-        case 37:  /*seta para direita*/
-           x=0;
+
+        case 38:  /*seta para direita*/
+            posicaoY = 200;
+            if (y - dy > 0){
+                y -= dy;
+                posicao++;
+                if(posicao == NUM_POSICOES){
+                    posicao = 1;
+                  
+                }
+            }
             break; 
     }
 
@@ -34,7 +72,7 @@ function KeyDown(evt){
 
 function Desenhar() {    
     tile1.src = "sprites.png";
-    ctx.drawImage(tile1,  eixoXdoDesenhoDaSubImage*100, 100, 100, 100, x,0, 100, 100);
+    ctx.drawImage(tile1,  posicao*100, posicaoY, 100, 100, x,y, 100, 100);
 }
 
 function LimparTela() {
