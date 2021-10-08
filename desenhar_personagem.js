@@ -4,7 +4,7 @@ var dx = 10;//a taxa de varia��o (velocidade) horizontal do objeto
 var dy = 10;
 var x = 0;//posi��o horizontal do objeto (com valor inicial)
 var y = 0;//posi��o vertical do objeto (com valor inicial)
-var xEnemie = 0;
+var xEnemie = 400;
 var yEnemie = 0;
 var WIDTH = 1000;//largura da �rea retangular
 var HEIGHT = 340;//altura da �rea retangular
@@ -21,9 +21,24 @@ var rectPlayer = {};
 var rectEnemy = {};
 var rectFloor = {};
 var image = "enemie.png"
+var life = 200
+var posicaoEmemy = 1;
+const NUM_POSICOES_ENEMY = 3;
 
 
 
+
+function moveEnemy(){
+    
+    if(xEnemie - dx > (WIDTH - WIDTH)){
+        xEnemie -= 3;
+    }
+    posicaoEmemy++;
+    if(posicaoEmemy == NUM_POSICOES_ENEMY){
+        
+        posicaoEmemy = 1;
+    }
+}
 
 function KeyDown(evt){
     switch (evt.keyCode) {
@@ -32,7 +47,7 @@ function KeyDown(evt){
             if (x + dx < WIDTH - 100){
                 x += dx;
                 posicaoDireita++;
-                if(posicao == NUM_POSICOES){
+                if(posicaoE == NUM_POSICOES){
                     posicao = 1;
                   
                 }
@@ -81,6 +96,13 @@ function KeyDown(evt){
 
 function Desenhar() {
 
+    ctx.fillStyle = 'white';
+    ctx.fillRect(10, 10, 200, 20);
+
+    ctx.fillStyle = 'green';
+    ctx.fillRect(10, 10, life, 20);
+
+    
 
     rectPlayer = {x,y, width: 100, height:100}
     tile1.src = "sprites.png";
@@ -89,8 +111,9 @@ function Desenhar() {
 
     rectEnemy = {x:200,y:200,width:100,height:100}
     tile3.src = image;
-    ctx.drawImage(tile3, 0, 0, 120, 100, 200,185, 100, 120);
+    ctx.drawImage(tile3, posicaoEmemy*120, 0, 120, 100, xEnemie,185, 100, 120);
 
+    console.log(xEnemie)
     tile2.src = "floor.png"
    
     for(i = 0; i < WIDTH; i++){
@@ -105,6 +128,15 @@ function colision(){
         rectPlayer.y < rectEnemy.y + rectEnemy.height &&
         rectPlayer.y + rectPlayer.height > rectEnemy.y) {
             console.log("colidiu")
+            life = life - 10;
+     }
+
+     if (rectPlayer.x > rectEnemy.x + rectEnemy.width &&
+        rectPlayer.x + rectPlayer.width < rectEnemy.x &&
+        rectPlayer.y > rectEnemy.y + rectEnemy.height &&
+        rectPlayer.y + rectPlayer.height < rectEnemy.y) {
+            console.log("colidiu")
+            life = life - 10;
      }
 }
 
@@ -127,9 +159,9 @@ function LimparTela() {
 }
 
 function Atualizar() {
+    moveEnemy();
     colision();
     colisionFloor();
-    
     LimparTela();    
     Desenhar();
 }
