@@ -4,24 +4,26 @@ var dx = 10;//a taxa de varia��o (velocidade) horizontal do objeto
 var dy = 10;
 var x = 0;//posi��o horizontal do objeto (com valor inicial)
 var y = 0;//posi��o vertical do objeto (com valor inicial)
+var xEnemie = 0;
+var yEnemie = 0;
 var WIDTH = 1000;//largura da �rea retangular
 var HEIGHT = 340;//altura da �rea retangular
 var eixoXdoDesenhoDaSubImage = 0;
 var tile1 = new Image();//Imagem que ser� carregada e desenhada na canvas
 var tile2 = new Image();
+var tile3 = new Image();
 var posicao = 1;
 var posicaoY = 100
 var posicaoDireita = 1;
 var posicaoEsquerda = 5;//Indicador da posi��o atual do personagem
 var NUM_POSICOES = 5;//Quantidade de imagens que comp�em o movimento
-var matriz = [[]]
+var rectPlayer = {};
+var rectEnemy = {};
+var rectFloor = {};
+var image = "enemie.png"
 
 
 
-function gravidade(){
-    if(y < 180)
-        y = y + 40;
-}
 
 function KeyDown(evt){
     switch (evt.keyCode) {
@@ -30,11 +32,10 @@ function KeyDown(evt){
             if (x + dx < WIDTH - 100){
                 x += dx;
                 posicaoDireita++;
-                if(posicaoDireita == NUM_POSICOES){
-                    posicaoDireita = 1;
+                if(posicao == NUM_POSICOES){
+                    posicao = 1;
                   
                 }
-                posicao = posicaoDireita
             }
             break; 
         
@@ -78,14 +79,43 @@ function KeyDown(evt){
 
 }
 
-function Desenhar() {    
+function Desenhar() {
+
+
+    rectPlayer = {x,y, width: 100, height:100}
     tile1.src = "sprites.png";
     ctx.drawImage(tile1,  posicao*100, posicaoY, 100, 100, x,y, 100, 100);
+    
+
+    rectEnemy = {x:200,y:200,width:100,height:100}
+    tile3.src = image;
+    ctx.drawImage(tile3, 0, 0, 120, 100, 200,185, 100, 120);
 
     tile2.src = "floor.png"
+   
     for(i = 0; i < WIDTH; i++){
             ctx.drawImage(tile2,  0, 0, 50, 50, i*50,290, 50, 50);
+            rectFloor = {x:i*50,y:290,width:50,height:50}
     }
+}
+
+function colision(){
+    if (rectPlayer.x < rectEnemy.x + rectEnemy.width &&
+        rectPlayer.x + rectPlayer.width > rectEnemy.x &&
+        rectPlayer.y < rectEnemy.y + rectEnemy.height &&
+        rectPlayer.y + rectPlayer.height > rectEnemy.y) {
+            console.log("colidiu")
+     }
+}
+
+function colisionFloor(){
+    if (
+        rectPlayer.y < rectFloor.y + rectFloor.height &&
+        rectPlayer.y + rectPlayer.height > rectFloor.y) {
+           
+     }else{
+         y = y + 40;
+     }
 }
 
 function LimparTela() {
@@ -97,7 +127,9 @@ function LimparTela() {
 }
 
 function Atualizar() {
-    gravidade();
+    colision();
+    colisionFloor();
+    
     LimparTela();    
     Desenhar();
 }
